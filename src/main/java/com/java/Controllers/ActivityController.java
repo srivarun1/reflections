@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -25,14 +26,20 @@ public class ActivityController {
     RateLimiterImpl rateLimiter;
 
     @PostMapping(value = "Add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public boolean addActivity(String activity, String cookieId, String date)
+    public int addActivity(String activity, String cookieId, String date)
     {
         String username = userAccessImpl.authenticate(cookieId);
-        if(username != null && rateLimiter.isWithinRateLimit(cookieId))
+        if(username == null)
         {
-            return activityDAO.addActivity(new Activity(username,date,activity));
+            return -10;
         }
-        return false;
+        if(username != null && rateLimiter.isWithinRateLimit(cookieId) && activity.length() > 0)
+        {
+            Activity currentActivity = new Activity(username,date,activity);
+            activityDAO.addActivity(currentActivity);
+            return activityDAO.getActivityId(currentActivity);
+        }
+        return -1;
     }
 
 
@@ -47,13 +54,24 @@ public class ActivityController {
         return false;
     }
 
-    @PostMapping(value = "Mark", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/MarkCompleted", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public boolean markCompleted(int activityId, String cookieId)
     {
         String username = userAccessImpl.authenticate(cookieId);
         if(username != null && rateLimiter.isWithinRateLimit(cookieId))
         {
-            return activityDAO.markActivity(activityId,username);
+             return activityDAO.markActivity(activityId,username);
+        }
+        return false;
+    }
+
+    @PutMapping(value = "/UnMarkCompleted", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public boolean unMarkCompleted(int activityId, String cookieId)
+    {
+        String username = userAccessImpl.authenticate(cookieId);
+        if(username != null && rateLimiter.isWithinRateLimit(cookieId))
+        {
+            return activityDAO.unMarkActivity(activityId,username);
         }
         return false;
     }

@@ -12,7 +12,7 @@ public class ActivityDAO {
     public boolean addActivity(Activity activity)
     {
         try{
-            PreparedStatement ps = DBConnectionImpl.getPreparedStatement("INSERT INTO ACTIVITY(USERNAME,DATE,ACTIVITY) VALUES(?,?,?)");
+            PreparedStatement ps = DBConnectionImpl.getPreparedStatement("INSERT INTO ACTIVITY(USERNAME,DATE,ACTIVITY) VALUES(?,?,?);");
             ps.setString(1,activity.getUsername());
             ps.setString(2,activity.getDate());
             ps.setString(3,activity.getActivity());
@@ -25,6 +25,28 @@ public class ActivityDAO {
         }
         return true;
 
+    }
+
+
+    public int getActivityId(Activity activity)
+    {
+        try
+        {
+            PreparedStatement ps = DBConnectionImpl.getPreparedStatement("SELECT ID FROM ACTIVITY WHERE USERNAME=? AND DATE=? AND ACTIVITY=?");
+            ps.setString(1,activity.getUsername());
+            ps.setString(2,activity.getDate());
+            ps.setString(3,activity.getActivity());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next())
+            {
+                return rs.getInt(1);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public boolean removeActivity(int activityId,String username) {
@@ -45,6 +67,21 @@ public class ActivityDAO {
     public boolean markActivity(int activityId, String username) {
         try{
             PreparedStatement ps = DBConnectionImpl.getPreparedStatement("UPDATE ACTIVITY SET COMPLETED = TRUE WHERE ID = ? AND USERNAME = ?");
+            ps.setInt(1,activityId);
+            ps.setString(2,username);
+            ps.executeUpdate();
+            return true;
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean unMarkActivity(int activityId, String username) {
+        try{
+            PreparedStatement ps = DBConnectionImpl.getPreparedStatement("UPDATE ACTIVITY SET COMPLETED = FALSE WHERE ID = ? AND USERNAME = ?");
             ps.setInt(1,activityId);
             ps.setString(2,username);
             ps.executeUpdate();
