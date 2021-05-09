@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
-@Component("ActivityCOntroller")
+@Component("ActivityController")
 @RestController
 @RequestMapping("/Activity")
 public class ActivityController {
