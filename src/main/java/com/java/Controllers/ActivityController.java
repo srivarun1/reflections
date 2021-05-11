@@ -16,7 +16,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 @Component("ActivityController")
 @RestController
-@RequestMapping("/Activity")
+@RequestMapping("/activity")
 public class ActivityController {
 
     @Autowired
@@ -25,14 +25,10 @@ public class ActivityController {
     @Autowired
     RateLimiterImpl rateLimiter;
 
-    @PostMapping(value = "Add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public int addActivity(String activity, String cookieId, String date)
     {
         String username = userAccessImpl.authenticate(cookieId);
-        if(username == null)
-        {
-            return -10;
-        }
         if(username != null && rateLimiter.isWithinRateLimit(cookieId) && activity.length() > 0)
         {
             Activity currentActivity = new Activity(username,date,activity);
@@ -43,7 +39,7 @@ public class ActivityController {
     }
 
 
-    @PostMapping(value = "Delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @DeleteMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public boolean removeActivity(int activityId, String cookieId)
     {
         String username = userAccessImpl.authenticate(cookieId);
@@ -54,7 +50,7 @@ public class ActivityController {
         return false;
     }
 
-    @PutMapping(value = "/MarkCompleted", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/mark", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public boolean markCompleted(int activityId, String cookieId)
     {
         String username = userAccessImpl.authenticate(cookieId);
@@ -65,7 +61,7 @@ public class ActivityController {
         return false;
     }
 
-    @PutMapping(value = "/UnMarkCompleted", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/unmark", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public boolean unMarkCompleted(int activityId, String cookieId)
     {
         String username = userAccessImpl.authenticate(cookieId);
@@ -76,7 +72,7 @@ public class ActivityController {
         return false;
     }
 
-    @PostMapping(value = "Get", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @GetMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @JsonSerialize
     public List<Activity> getCurrentActivities(String cookieId, String date)
     {

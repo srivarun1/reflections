@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Component("ReportController")
 @RestController
-@RequestMapping("/Access")
+@RequestMapping("/access")
 
 public class AccessController {
 
@@ -27,7 +27,7 @@ public class AccessController {
     UserAccessDAO userAccessDAO = new UserAccessDAO();
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping(value = "SignIn", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "signin", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String validateCred(Credential credential)
     {
          if(userAccessDAO.validateCredential(credential))
@@ -38,7 +38,7 @@ public class AccessController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping(value = "ValidateCookie", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "autosignin", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String validateCookie(String cookie)
     {
         String username = userAccess.authenticate(cookie);
@@ -52,14 +52,14 @@ public class AccessController {
 
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping(value = "SignUp", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "signup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public boolean addUser(Credential credential)
     {
         return userAccessDAO.addCredential(credential);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping(value = "UpdatePassword", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "updatepassword", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public boolean updatePassword(Credential credential, String newPassword)
     {
 
