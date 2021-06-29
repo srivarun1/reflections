@@ -8,7 +8,7 @@ Aim :
 A minimal context todolist forcing user to concentrate on only one thing at a time.
 
 Completed : 
-1. IAM User access moduke
+1. IAM User access module
 2. Activity manipulation and addition
 
 To - Do : 
